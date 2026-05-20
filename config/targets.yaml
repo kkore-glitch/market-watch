@@ -1,0 +1,29 @@
+lookback_days: 260
+output_dir: reports
+
+targets:
+  - id: TAIEX
+    name: 台股加權指數
+    group: taiwan_market
+    preferred_source: yahoo
+    yahoo_symbol: ^TWII
+  - id: "0050"
+    name: 元大台灣50
+    group: taiwan_etf
+    preferred_source: finmind
+    yahoo_symbol: 0050.TW
+  - id: "00878"
+    name: 國泰永續高股息
+    group: taiwan_etf
+    preferred_source: finmind
+    yahoo_symbol: 00878.TW
+  - id: "00719B"
+    name: 元大美債1-3
+    group: taiwan_bond_etf
+    preferred_source: finmind
+    yahoo_symbol: 00719B.TW
+  - id: "^GSPC"
+    name: S&P 500
+    group: us_market
+    preferred_source: yahoo
+    yahoo_symbol: ^GSPC
