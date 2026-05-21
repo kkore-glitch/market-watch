@@ -1,6 +1,8 @@
 name: Daily Market Watch Pages
 
 on:
+  push:
+    branches: [master]
   workflow_dispatch:
   schedule:
     # 19:00 Asia/Taipei, Monday to Friday.
