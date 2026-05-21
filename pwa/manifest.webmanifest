@@ -1,0 +1,18 @@
+{
+  "name": "每日市場觀察",
+  "short_name": "市場觀察",
+  "description": "台股大盤、0050、00878、00719B 與 S&P 500 每日觀察報告",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#eef3ef",
+  "theme_color": "#102826",
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

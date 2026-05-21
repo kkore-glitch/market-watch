@@ -82,8 +82,18 @@ def latest_signal(frame: pd.DataFrame) -> dict[str, object]:
         "warnings": warnings,
         "supports": supports,
         "source": str(latest.get("source", "")),
+        "sparkline": sparkline_points(frame),
     }
 
 
 def none_or_float(value: object) -> float | None:
     return None if pd.isna(value) else float(value)
+
+
+def sparkline_points(frame: pd.DataFrame, periods: int = 60) -> list[dict[str, object]]:
+    recent = frame.tail(periods)
+    return [
+        {"date": str(row["date"]), "close": float(row["close"])}
+        for _, row in recent.iterrows()
+        if pd.notna(row["close"])
+    ]

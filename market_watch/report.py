@@ -21,18 +21,23 @@ def render_markdown(payload: dict[str, Any], ai_summary: str | None) -> str:
 
     lines.append("## 一、台股大盤")
     append_group(lines, payload, {"TAIEX"})
+    lines.append("")
 
     lines.append("## 二、S&P 500 與指定標的")
     append_group(lines, payload, {item["id"] for item in payload["targets"] if item["id"] != "TAIEX"})
+    lines.append("")
 
     lines.append("## 三、新聞與波動因子")
     append_news(lines, payload.get("news", []))
+    lines.append("")
+
+    append_collection_errors(lines, payload.get("collection_errors", []))
 
     lines.append("## AI 協作提示詞")
     lines.append("")
     lines.append("沒有設定 `OPENAI_API_KEY` 時，可以把下面提示詞貼給 AI：")
     lines.append("")
-    lines.append("```json")
+    lines.append("```text")
     lines.append(build_ai_prompt(payload))
     lines.append("```")
     lines.append("")
@@ -44,10 +49,17 @@ def append_group(lines: list[str], payload: dict[str, Any], ids: set[str]) -> No
     for item in payload["targets"]:
         if item["id"] not in ids:
             continue
-        signal = item["signal"]
         lines.append("")
         lines.append(f"### {item['name']} ({item['id']})")
         lines.append("")
+        if item.get("error"):
+            lines.append(f"- 資料狀態: {item['error']}")
+            lines.append("- 觀察標準: 資料不足，今日暫不產生技術面判斷")
+            lines.append("- 人話解讀: " + item.get("interpretation", {}).get("summary", "資料不足"))
+            lines.append("- 基礎買賣建議: " + item.get("interpretation", {}).get("action", "資料不足"))
+            continue
+        signal = item["signal"]
+        interpretation = item.get("interpretation", {})
         lines.append(
             f"- 現況: {signal['date']} 收 {signal['close']:,.2f}，"
             f"漲跌 {signal['change']:,.2f} ({signal['change_pct']:.2f}%)"
@@ -66,7 +78,9 @@ def append_group(lines: list[str], payload: dict[str, Any], ids: set[str]) -> No
             + format_line("半年線", signal.get("sma120"))
         )
         lines.append("- 觀察標準: " + join_or_none(signal["events"] + signal["warnings"] + signal["supports"]))
-        lines.append("- 買賣壓解讀: " + "；".join(item.get("pressure_reading", [])))
+        lines.append("- 籌碼狀態: " + "；".join(item.get("pressure_reading", [])))
+        lines.append("- 人話解讀: " + str(interpretation.get("summary", "資料不足")))
+        lines.append("- 基礎買賣建議: " + str(interpretation.get("action", "資料不足")))
         lines.append(f"- 行情來源: {signal.get('source')}")
 
 
@@ -80,6 +94,16 @@ def append_news(lines: list[str], news: list[dict[str, Any]]) -> None:
         lines.append(f"- {item.get('date')} [{item.get('source')}] {item.get('title')}")
         if item.get("link"):
             lines.append(f"  {item['link']}")
+
+
+def append_collection_errors(lines: list[str], errors: list[str]) -> None:
+    if not errors:
+        return
+    lines.append("")
+    lines.append("## 四、資料取得注意事項")
+    for error in errors:
+        lines.append("")
+        lines.append(f"- {error}")
 
 
 def format_line(name: str, value: float | None) -> str:

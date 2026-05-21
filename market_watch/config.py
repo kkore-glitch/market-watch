@@ -14,6 +14,7 @@ class Target:
     group: str
     preferred_source: str
     yahoo_symbol: str | None = None
+    stooq_symbol: str | None = None
     finmind_dataset: str | None = None
 
 
@@ -41,5 +42,6 @@ def target_to_dict(target: Target) -> dict[str, Any]:
         "group": target.group,
         "preferred_source": target.preferred_source,
         "yahoo_symbol": target.yahoo_symbol,
+        "stooq_symbol": target.stooq_symbol,
         "finmind_dataset": target.finmind_dataset,
     }

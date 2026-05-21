@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="市場觀察">
+  <rect width="512" height="512" rx="96" fill="#102826"/>
+  <path d="M96 334h320" stroke="#dce8df" stroke-width="28" stroke-linecap="round"/>
+  <path d="M122 306l70-74 72 45 102-118" fill="none" stroke="#40d3bf" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="192" cy="232" r="22" fill="#f3c969"/>
+  <circle cx="264" cy="277" r="22" fill="#f3c969"/>
+  <circle cx="366" cy="159" r="22" fill="#f3c969"/>
+</svg>

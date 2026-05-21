@@ -25,5 +25,6 @@ targets:
   - id: "^GSPC"
     name: S&P 500
     group: us_market
-    preferred_source: yahoo
+    preferred_source: finmind
     yahoo_symbol: ^GSPC
+    finmind_dataset: USStockPrice

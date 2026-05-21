@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#102826" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="市場觀察" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <title>每日市場觀察</title>
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="icons/icon.svg" />
+    <link rel="stylesheet" href="app.css?v=10" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Market Watch</p>
+          <h1>每日市場觀察</h1>
+        </div>
+        <div class="header-actions">
+          <button class="icon-button ai-button" id="apiAiButton" type="button" aria-label="使用 OpenAI API 更新分析">
+            AI
+          </button>
+          <button class="icon-button ai-button" id="gptButton" type="button" aria-label="複製 ChatGPT 分析提示詞">
+            GPT
+          </button>
+          <button class="icon-button" id="refreshButton" type="button" aria-label="重新整理">
+            <span aria-hidden="true">↻</span>
+          </button>
+        </div>
+      </header>
+
+      <section class="summary-strip" id="summaryStrip" aria-live="polite"></section>
+
+      <nav class="tabs" aria-label="報告分類">
+        <button class="tab is-active" type="button" data-view="targets">標的</button>
+        <button class="tab" type="button" data-view="news">新聞</button>
+        <button class="tab" type="button" data-view="notes">AI分析</button>
+      </nav>
+
+      <section class="view is-active" id="targetsView"></section>
+      <section class="view" id="newsView"></section>
+      <section class="view" id="notesView"></section>
+    </main>
+    <script src="app.js?v=10" type="module"></script>
+  </body>
+</html>

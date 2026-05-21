@@ -1,0 +1,84 @@
+name: Daily Market Watch Pages
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 19:00 Asia/Taipei, Monday to Friday.
+    - cron: "0 11 * * 1-5"
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Generate market report
+        env:
+          FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: ${{ vars.OPENAI_MODEL }}
+          MARKET_WATCH_USE_AI: ${{ vars.MARKET_WATCH_USE_AI }}
+        run: |
+          if [ "${MARKET_WATCH_USE_AI}" = "true" ]; then
+            python -m market_watch.cli run --output "reports/market-$(date +%F).md"
+          else
+            python -m market_watch.cli run --no-ai --output "reports/market-$(date +%F).md"
+          fi
+
+      - name: Build static site
+        run: |
+          mkdir -p public
+          cp -R pwa reports public/
+          cat > public/index.html <<'HTML'
+          <!doctype html>
+          <html lang="zh-Hant">
+            <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1">
+              <meta http-equiv="refresh" content="0; url=pwa/">
+              <title>每日市場觀察</title>
+            </head>
+            <body>
+              <a href="pwa/">前往每日市場觀察</a>
+            </body>
+          </html>
+          HTML
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
